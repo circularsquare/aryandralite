@@ -1,11 +1,13 @@
 package hlt;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameMap {
     public final int width;
     public final int height;
     public final MapCell[][] cells;
+	final Random rng;
 
     public GameMap(final int width, final int height) {
         this.width = width;
@@ -15,6 +17,11 @@ public class GameMap {
         for (int y = 0; y < height; ++y) {
             cells[y] = new MapCell[width];
         }
+		
+		
+		final long rngSeed;  //copied and pasted from mybot
+        rngSeed = System.nanoTime();
+        rng = new Random(rngSeed);
     }
 
     public MapCell at(final Position position) {
@@ -45,7 +52,7 @@ public class GameMap {
         return new Position(x, y);
     }
 
-    public ArrayList<Direction> getUnsafeMoves(final Position source, final Position destination) {
+    public ArrayList<Direction> getUnsafeMoves(final Position source, final Position destination) { //this function says which way to go to get to dest
         final ArrayList<Direction> possibleMoves = new ArrayList<>();
 
         final Position normalizedSource = normalize(source);
@@ -55,7 +62,7 @@ public class GameMap {
         final int dy = Math.abs(normalizedSource.y - normalizedDestination.y);
         final int wrapped_dx = width - dx;
         final int wrapped_dy = height - dy;
-
+		
         if (normalizedSource.x < normalizedDestination.x) {
             possibleMoves.add(dx > wrapped_dx ? Direction.WEST : Direction.EAST);
         } else if (normalizedSource.x > normalizedDestination.x) {
@@ -67,7 +74,6 @@ public class GameMap {
         } else if (normalizedSource.y > normalizedDestination.y) {
             possibleMoves.add(dy < wrapped_dy ? Direction.NORTH : Direction.SOUTH);
         }
-
         return possibleMoves;
     }
 
@@ -77,12 +83,31 @@ public class GameMap {
             final Position targetPos = ship.position.directionalOffset(direction);
             if (!at(targetPos).isOccupied()) {
                 at(targetPos).markUnsafe(ship);
-                return direction;
+				at(ship).markSafe();
+				return direction;
             }
         }
-
         return Direction.STILL;
     }
+	
+	public Direction randomNavigate(final Ship ship){
+		//for (final Direction direction : Direction.ALL_CARDINALS.get(rng.nextInt(4))){}
+		int tryLast = rng.nextInt(4);
+		int i = (tryLast+1)%4;
+		while (i != tryLast){
+			Direction direction = Direction.ALL_CARDINALS.get(i);
+			final Position targetPos = ship.position.directionalOffset(direction);
+			if (!(at(targetPos).isOccupied())){
+				at(targetPos).markUnsafe(ship);
+				at(ship).markSafe();
+				return direction;
+			}
+			i = (i+1)%4;
+		}
+		return Direction.STILL;
+		//this returns a direction to go into at random
+		//it takes a ship...
+	}
 
     void _update() {
         for (int y = 0; y < height; ++y) {

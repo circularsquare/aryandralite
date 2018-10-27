@@ -20,10 +20,7 @@ public class MyBot {
 
         Game game = new Game();
 		Map<EntityId, String> shipStatus = new HashMap<EntityId, String>();
-		
-        // At this point "game" variable is populated with initial map data.
         // This is a good place to do computationally expensive start-up pre-processing.
-        // As soon as you call "ready" function below, the 2 second per turn timer will start.
         game.ready("MyJavaBot");
 
         Log.log("Successfully created bot! My Player ID is " + game.myId + ". Bot rng seed is " + rngSeed + ".");
@@ -43,7 +40,7 @@ public class MyBot {
 				if(ship.halite >= Constants.MAX_HALITE/4){
 					shipStatus.put(ship.id, "returning");
 				}
-				else{if(shipStatus.get(ship.id)=="returning"){
+				if(shipStatus.get(ship.id)=="returning"){
 					if(ship.position == me.shipyard.position){
 						shipStatus.put(ship.id, "exploring");
 					}
@@ -51,16 +48,13 @@ public class MyBot {
 						Direction move = gameMap.naiveNavigate(ship, me.shipyard.position);
 						commandQueue.add(ship.move(move));
 					}
-				}}
+				}
 				
 				if(shipStatus.get(ship.id)=="exploring"){
-					if ((gameMap.at(ship).halite < Constants.MAX_HALITE/10)) {
-						final Direction randomDirection = Direction.ALL_CARDINALS.get(rng.nextInt(4));
-						commandQueue.add(ship.move(randomDirection));
-						
-						//u wanna check all the positions around u to see if they're occupied
-						
-						
+					if ((gameMap.at(ship).halite < Constants.MAX_HALITE/10) || ship.position==me.shipyard.position) {
+						//final Direction randomDirection = Direction.ALL_CARDINALS.get(rng.nextInt(4));
+						Direction move = gameMap.randomNavigate(ship);
+						commandQueue.add(ship.move(move));
 					} else {
 						commandQueue.add(ship.stayStill());
 					}
