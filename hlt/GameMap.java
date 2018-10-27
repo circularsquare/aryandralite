@@ -106,7 +106,6 @@ public class GameMap {
 		}
 		return Direction.STILL;
 		//this returns a direction to go into at random
-		//it takes a ship...
 	}
 
     void _update() {

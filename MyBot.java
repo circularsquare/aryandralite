@@ -35,27 +35,26 @@ public class MyBot {
             for (final Ship ship : me.ships.values()) {
 				
 				if(!shipStatus.containsKey(ship.id)){
-					shipStatus.put(ship.id, "exploring");
+					shipStatus.put(ship.id, "exploring"); //if new ship, set exploring
 				}
 				if(ship.halite >= Constants.MAX_HALITE/4){
-					shipStatus.put(ship.id, "returning");
+					shipStatus.put(ship.id, "returning"); //if fullish, set returning
 				}
-				if(shipStatus.get(ship.id)=="returning"){
+				if(shipStatus.get(ship.id)=="returning"){ 
 					if(ship.position == me.shipyard.position){
-						shipStatus.put(ship.id, "exploring");
+						shipStatus.put(ship.id, "exploring"); //if returned, set exploring and go into next if block
 					}
 					else{
-						Direction move = gameMap.naiveNavigate(ship, me.shipyard.position);
+						Direction move = gameMap.naiveNavigate(ship, me.shipyard.position); //if returning, go to shipyard 
 						commandQueue.add(ship.move(move));
 					}
 				}
 				
 				if(shipStatus.get(ship.id)=="exploring"){
-					if ((gameMap.at(ship).halite < Constants.MAX_HALITE/10) || ship.position==me.shipyard.position) {
-						//final Direction randomDirection = Direction.ALL_CARDINALS.get(rng.nextInt(4));
+					if ((gameMap.at(ship).halite < Constants.MAX_HALITE/10) || ship.position==me.shipyard.position) { //if ur spot is empty, randommove
 						Direction move = gameMap.randomNavigate(ship);
 						commandQueue.add(ship.move(move));
-					} else {
+					} else { //if ur spot has halite, collect
 						commandQueue.add(ship.stayStill());
 					}
 				}
