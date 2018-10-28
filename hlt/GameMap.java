@@ -83,7 +83,7 @@ public class GameMap {
             final Position targetPos = ship.position.directionalOffset(direction);
             if (!at(targetPos).isOccupied()) {
                 at(targetPos).markUnsafe(ship);
-				at(ship).markSafe();
+				//at(ship).markSafe();
 				return direction;
             }
         }
@@ -99,7 +99,7 @@ public class GameMap {
 			final Position targetPos = ship.position.directionalOffset(direction);
 			if (!(at(targetPos).isOccupied())){
 				at(targetPos).markUnsafe(ship);
-				at(ship).markSafe();
+				//at(ship).markSafe();
 				return direction;
 			}
 			i = (i+1)%4;

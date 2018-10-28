@@ -38,7 +38,7 @@ public class MyBot {
 					shipStatus.put(ship.id, "exploring"); //if new ship, set exploring
 				}
 				Log.log("Ship " + ship.id + " is " + shipStatus.get(ship.id));
-				if(ship.halite >= Constants.MAX_HALITE/4){
+				if(ship.halite >= Constants.MAX_HALITE/2){
 					shipStatus.put(ship.id, "returning"); //if fullish, set returning
 				}
 				
@@ -67,8 +67,9 @@ public class MyBot {
             }
 
             if (
-                game.turnNumber <= 200 &&
-                me.halite >= Constants.SHIP_COST &&
+                game.turnNumber % 20 == 1 && 
+				game.turnNumber <= 200 &&
+                me.halite >= 3000 &&
                 !gameMap.at(me.shipyard).isOccupied())
             {
                 commandQueue.add(me.shipyard.spawn());
