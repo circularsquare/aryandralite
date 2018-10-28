@@ -33,16 +33,20 @@ public class MyBot {
             final ArrayList<Command> commandQueue = new ArrayList<>();
 
             for (final Ship ship : me.ships.values()) {
-				
+				Log.log("Ship " + ship.id + " has " + ship.halite + " halite!");//idk how logs work??? this doesnt do anything afaik
 				if(!shipStatus.containsKey(ship.id)){
 					shipStatus.put(ship.id, "exploring"); //if new ship, set exploring
 				}
+				Log.log("Ship " + ship.id + " is " + shipStatus.get(ship.id));
 				if(ship.halite >= Constants.MAX_HALITE/4){
 					shipStatus.put(ship.id, "returning"); //if fullish, set returning
 				}
+				
+				
 				if(shipStatus.get(ship.id)=="returning"){ 
-					if(ship.position == me.shipyard.position){
+					if(ship.position.equals( me.shipyard.position)){
 						shipStatus.put(ship.id, "exploring"); //if returned, set exploring and go into next if block
+						//commandQueue.add(ship.move(Direction.WEST));
 					}
 					else{
 						Direction move = gameMap.naiveNavigate(ship, me.shipyard.position); //if returning, go to shipyard 
@@ -51,7 +55,7 @@ public class MyBot {
 				}
 				
 				if(shipStatus.get(ship.id)=="exploring"){
-					if ((gameMap.at(ship).halite < Constants.MAX_HALITE/10) || ship.position==me.shipyard.position) { //if ur spot is empty, randommove
+					if (gameMap.at(ship).halite < Constants.MAX_HALITE/10) { //if ur spot is empty, randommove
 						Direction move = gameMap.randomNavigate(ship);
 						commandQueue.add(ship.move(move));
 					} else { //if ur spot has halite, collect
