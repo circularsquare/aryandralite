@@ -107,6 +107,38 @@ public class GameMap {
 		return Direction.STILL;
 		//this returns a direction to go into at random
 	}
+	public Direction randomNavigate(final Ship ship, Direction d1, Direction d2){
+		//for (final Direction direction : Direction.ALL_CARDINALS.get(rng.nextInt(4))){}
+		if (rng.nextInt(2) == 0) {
+			final Position targetPos = ship.position.directionalOffset(d1);
+			if(!(at(targetPos).isOccupied())){
+				at(targetPos).markUnsafe(ship);
+				return d1;
+			}
+		}
+		else {
+			final Position targetPos = ship.position.directionalOffset(d2);
+			if(!(at(targetPos).isOccupied())){
+				at(targetPos).markUnsafe(ship);
+				return d2;
+			}
+		}
+		int tryLast = rng.nextInt(4);
+		int i = (tryLast+1)%4;
+		while (i != tryLast){
+			Direction direction = Direction.ALL_CARDINALS.get(i);
+			final Position targetPos = ship.position.directionalOffset(direction);
+			if (!(at(targetPos).isOccupied())){
+				at(targetPos).markUnsafe(ship);
+				//at(ship).markSafe();
+				return direction;
+			}
+			i = (i+1)%4;
+		}
+		return Direction.STILL;
+		//this returns a direction to go into at random
+	}
+	
 
     void _update() {
         for (int y = 0; y < height; ++y) {
