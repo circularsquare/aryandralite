@@ -56,7 +56,7 @@ public class MyBot {
 				
 				if(shipStatus.get(ship.id)=="exploring"){
 					if (gameMap.at(ship).halite < Constants.MAX_HALITE/10) { //if ur spot is empty, randommove
-						Direction move = gameMap.randomNavigate(ship, Direction.NORTH, Direction.WEST);
+						Direction move = gameMap.randomNavigate(ship, Direction.ALL_CARDINALS.get(ship.id % 4), Direction.ALL_CARDINALS.get((ship.id + 1) % 4));
 						commandQueue.add(ship.move(move));
 					} else { //if ur spot has halite, collect
 						commandQueue.add(ship.stayStill());
